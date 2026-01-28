@@ -13,8 +13,11 @@ export interface Book {
   trending: boolean;
   seoKeywords: string[];
   metaDescription: string;
-  price: string; // e.g., "Free" or "Paid"
-  format: string; // e.g., "PDF", "EPUB"
+  price: string;
+  format: string;
+  pagesCount?: number;
+  rating?: number;
+  ratingCount?: number;
 }
 
 export interface AdConfig {

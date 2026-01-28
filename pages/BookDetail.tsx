@@ -1,6 +1,6 @@
 
 import React, { useEffect, useState } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useParams, Link, useNavigate } from 'react-router-dom';
 import { Book } from '../types';
 import AdSection from '../components/AdSection';
 import { geminiService } from '../services/geminiService';
@@ -11,6 +11,7 @@ const BookDetail: React.FC = () => {
   const [recommendations, setRecommendations] = useState<string>('');
   const [loading, setLoading] = useState(true);
   const [showReader, setShowReader] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const saved = localStorage.getItem('books');
@@ -19,34 +20,15 @@ const BookDetail: React.FC = () => {
       const found = allBooks.find(b => b.id === id);
       if (found) {
         setBook(found);
-        
-        // Fetch AI recommendations
         geminiService.suggestSimilarBooks(found.title, found.category).then(setRecommendations);
       }
     }
     setLoading(false);
   }, [id]);
 
-  const handleDownload = () => {
+  const handleDownloadClick = () => {
     if (!book) return;
-    
-    // محاكاة زيادة عدد التحميلات في LocalStorage
-    const saved = localStorage.getItem('books');
-    if (saved) {
-      const allBooks: Book[] = JSON.parse(saved);
-      const updated = allBooks.map(b => 
-        b.id === book.id ? { ...b, downloads: b.downloads + 1 } : b
-      );
-      localStorage.setItem('books', JSON.stringify(updated));
-      setBook({ ...book, downloads: book.downloads + 1 });
-    }
-
-    // فتح رابط التحميل مباشرة
-    if (book.downloadUrl && book.downloadUrl !== '#') {
-      window.open(book.downloadUrl, '_blank');
-    } else {
-      alert('عذراً، رابط التحميل غير متاح حالياً لهذا الكتاب.');
-    }
+    navigate(`/download/${book.id}`);
   };
 
   const openReader = () => {
@@ -76,7 +58,7 @@ const BookDetail: React.FC = () => {
             <img src={book.coverImage} alt={book.title} className="w-full rounded-2xl shadow-2xl border-4 border-white" />
             <div className="mt-6 space-y-3">
               <button 
-                onClick={handleDownload}
+                onClick={handleDownloadClick}
                 className="w-full bg-indigo-600 text-white py-4 rounded-xl font-bold text-lg hover:bg-indigo-700 shadow-lg flex items-center justify-center space-x-2 space-x-reverse active:scale-95 transition-all"
               >
                 <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" /></svg>

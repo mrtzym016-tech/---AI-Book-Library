@@ -14,8 +14,9 @@ const Home: React.FC = () => {
     const saved = localStorage.getItem('books');
     if (saved) {
       const savedBooks: Book[] = JSON.parse(saved);
+      // دمج الكتب المحفوظة مع الكتب الافتراضية مع إزالة التكرار
       const uniqueSaved = savedBooks.filter(sb => !INITIAL_BOOKS.find(ib => ib.id === sb.id));
-      setAllBooks([...INITIAL_BOOKS, ...uniqueSaved]);
+      setAllBooks([...uniqueSaved, ...INITIAL_BOOKS]);
     } else {
       setAllBooks(INITIAL_BOOKS);
       localStorage.setItem('books', JSON.stringify(INITIAL_BOOKS));
@@ -24,6 +25,13 @@ const Home: React.FC = () => {
 
   const handleCategoryClick = (category: string) => {
     navigate(`/search?cat=${encodeURIComponent(category)}`);
+  };
+
+  const scrollToSection = (id: string) => {
+    const element = document.getElementById(id);
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth' });
+    }
   };
 
   return (
@@ -41,10 +49,16 @@ const Home: React.FC = () => {
             نستخدم الذكاء الاصطناعي لنقدم لك أفضل التلخيصات والتوصيات لكتابك القادم مع تحسينات سيو فائقة.
           </p>
           <div className="flex flex-col sm:flex-row justify-center gap-4">
-            <a href="#trending" className="bg-white text-indigo-900 px-10 py-4 rounded-2xl font-bold hover:bg-gray-100 transition-all shadow-xl text-lg">
+            <button 
+              onClick={() => scrollToSection('trending')}
+              className="bg-white text-indigo-900 px-10 py-4 rounded-2xl font-bold hover:bg-gray-100 transition-all shadow-xl text-lg active:scale-95"
+            >
               استكشف الترند
-            </a>
-            <button className="bg-indigo-700/50 backdrop-blur-sm text-white border border-indigo-500/50 px-10 py-4 rounded-2xl font-bold hover:bg-indigo-700 transition-all text-lg">
+            </button>
+            <button 
+              onClick={() => scrollToSection('latest')}
+              className="bg-indigo-700/50 backdrop-blur-sm text-white border border-indigo-500/50 px-10 py-4 rounded-2xl font-bold hover:bg-indigo-700 transition-all text-lg active:scale-95"
+            >
               أحدث الإضافات
             </button>
           </div>
@@ -58,7 +72,7 @@ const Home: React.FC = () => {
       <AdSection slot="top-banner" />
 
       {/* Main Grid Section */}
-      <section id="trending" className="mb-16">
+      <section id="trending" className="mb-16 scroll-mt-24">
         <div className="flex flex-col md:flex-row md:items-end justify-between mb-10 gap-4">
           <div>
             <h2 className="text-3xl font-black text-gray-900 mb-2 flex items-center">
@@ -68,19 +82,28 @@ const Home: React.FC = () => {
             <p className="text-gray-500 font-medium italic">أكثر الكتب طلباً في الوطن العربي حسب مؤشرات جوجل لهذا الأسبوع</p>
           </div>
           <div className="flex gap-2">
-            <button className="px-4 py-2 bg-white border border-gray-200 rounded-xl font-bold text-gray-700 hover:bg-gray-50 transition-colors">تحديث</button>
+            <button 
+              onClick={() => window.location.reload()}
+              className="px-4 py-2 bg-white border border-gray-200 rounded-xl font-bold text-gray-700 hover:bg-gray-50 transition-colors"
+            >
+              تحديث
+            </button>
           </div>
         </div>
 
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6">
-          {/* عرض الكتب الـ 5 الترند أولاً */}
+          {/* عرض أول 5 كتب ترند */}
           {allBooks.filter(b => b.trending).slice(0, 5).map(book => (
             <BookCard key={book.id} book={book} />
           ))}
           
-          {/* Middle Row Ad Slot */}
-          <div className="col-span-full py-4">
+          {/* قسم أحدث الإضافات في المنتصف */}
+          <div id="latest" className="col-span-full py-4 scroll-mt-24">
              <AdSection slot="in-grid-banner" />
+             <div className="mt-8 mb-6">
+               <h2 className="text-3xl font-black text-gray-900">📚 أحدث الكتب المضافة</h2>
+               <p className="text-gray-500 font-medium italic">اكتشف آخر الكنوز التي أضيفت للمكتبة حديثاً</p>
+             </div>
           </div>
 
           {/* عرض باقي الكتب */}

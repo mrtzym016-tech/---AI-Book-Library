@@ -8,13 +8,12 @@ import BookDetail from './pages/BookDetail';
 import Admin from './pages/Admin';
 import Search from './pages/Search';
 import Login from './pages/Login';
+import Download from './pages/Download';
 
-// Explicitly define types for children to resolve the missing prop error in certain TS environments
 interface AdminRouteProps {
   children: React.ReactNode;
 }
 
-// Wrap the component with React.FC to properly handle children in modern React types
 const AdminRoute: React.FC<AdminRouteProps> = ({ children }) => {
   const isAdmin = localStorage.getItem('is_admin') === 'true';
   return isAdmin ? <>{children}</> : <Navigate to="/login" />;
@@ -29,6 +28,7 @@ const App: React.FC = () => {
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/book/:id" element={<BookDetail />} />
+            <Route path="/download/:id" element={<Download />} />
             <Route path="/login" element={<Login />} />
             <Route 
               path="/admin" 
@@ -39,7 +39,6 @@ const App: React.FC = () => {
               } 
             />
             <Route path="/search" element={<Search />} />
-            {/* أي مسار آخر غير معروف يوجه للرئيسية */}
             <Route path="*" element={<Navigate to="/" />} />
           </Routes>
         </main>
