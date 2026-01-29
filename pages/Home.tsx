@@ -7,6 +7,11 @@ import AdSection from '../components/AdSection.tsx';
 import { INITIAL_BOOKS, CATEGORIES } from '../constants.ts';
 
 const Home: React.FC = () => {
+  // إضافة فحص وجود window لمنع أخطاء بيئة التشغيل غير المتصفحية
+  if (typeof window === "undefined") {
+    return null;
+  }
+
   const [allBooks, setAllBooks] = useState<Book[]>([]);
   const navigate = useNavigate();
 

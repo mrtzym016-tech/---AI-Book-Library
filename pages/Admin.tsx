@@ -1,8 +1,8 @@
 
 import React, { useState } from 'react';
-import { geminiService } from '../services/geminiService';
-import { Book } from '../types';
-import { CATEGORIES } from '../constants';
+import { geminiService } from '../services/geminiService.ts';
+import { Book } from '../types.ts';
+import { CATEGORIES } from '../constants.ts';
 import { useNavigate } from 'react-router-dom';
 
 const Admin: React.FC = () => {
@@ -30,10 +30,10 @@ const Admin: React.FC = () => {
       const newBook: Book = {
         id: Math.random().toString(36).substr(2, 9),
         ...formData,
-        description: aiResponse.description,
-        shortDescription: aiResponse.shortDescription,
-        seoKeywords: aiResponse.seoKeywords,
-        metaDescription: aiResponse.metaDescription,
+        description: aiResponse.description || `تحميل كتاب ${formData.title} مجاناً.`,
+        shortDescription: aiResponse.shortDescription || `كتاب ${formData.title} من تأليف ${formData.author}.`,
+        seoKeywords: aiResponse.seoKeywords || [formData.title, formData.author],
+        metaDescription: aiResponse.metaDescription || `تحميل كتاب ${formData.title} PDF.`,
         views: Math.floor(Math.random() * 100),
         downloads: 0,
         trending: true

@@ -1,9 +1,9 @@
 
 import React, { useEffect, useState } from 'react';
 import { useSearchParams, Link } from 'react-router-dom';
-import { Book } from '../types';
-import BookCard from '../components/BookCard';
-import AdSection from '../components/AdSection';
+import { Book } from '../types.ts';
+import BookCard from '../components/BookCard.tsx';
+import AdSection from '../components/AdSection.tsx';
 
 const Search: React.FC = () => {
   const [searchParams] = useSearchParams();
@@ -18,10 +18,8 @@ const Search: React.FC = () => {
       let filtered = allBooks;
 
       if (catFilter) {
-        // إذا كان هناك فلتر تصنيف، نقوم بالتصفية بناءً عليه أولاً
         filtered = filtered.filter(b => b.category === catFilter);
       } else if (query) {
-        // إذا كان بحثاً عاماً
         filtered = filtered.filter(b => 
           b.title.toLowerCase().includes(query.toLowerCase()) ||
           b.author.toLowerCase().includes(query.toLowerCase()) ||
