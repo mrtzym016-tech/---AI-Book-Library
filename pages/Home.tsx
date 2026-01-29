@@ -14,7 +14,7 @@ const Home: React.FC = () => {
     const saved = localStorage.getItem('books');
     if (saved) {
       const savedBooks: Book[] = JSON.parse(saved);
-      // دمج الكتب المحفوظة مع الكتب الافتراضية مع إزالة التكرار
+      // نجعل الكتب المحفوظة تظهر أولاً كأحدث إضافات
       const uniqueSaved = savedBooks.filter(sb => !INITIAL_BOOKS.find(ib => ib.id === sb.id));
       setAllBooks([...uniqueSaved, ...INITIAL_BOOKS]);
     } else {
@@ -27,101 +27,112 @@ const Home: React.FC = () => {
     navigate(`/search?cat=${encodeURIComponent(category)}`);
   };
 
+  // وظيفة التمرير السلس التي تحل مشكلة "الصفحة السوداء"
   const scrollToSection = (id: string) => {
     const element = document.getElementById(id);
     if (element) {
-      element.scrollIntoView({ behavior: 'smooth' });
+      // إزاحة بسيطة لتجاوز الهيدر الثابت
+      const headerOffset = 80;
+      const elementPosition = element.getBoundingClientRect().top;
+      const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+
+      window.scrollTo({
+        top: offsetPosition,
+        behavior: "smooth"
+      });
     }
   };
 
   return (
     <div className="py-8">
       {/* Hero Section */}
-      <section className="mb-12 bg-indigo-900 rounded-[2rem] p-8 md:p-16 text-white shadow-2xl relative overflow-hidden flex flex-col items-center text-center">
-        <div className="relative z-10 max-w-3xl">
-          <div className="inline-block bg-indigo-500/30 backdrop-blur-md px-4 py-1 rounded-full text-xs font-bold mb-6 border border-indigo-400/30 uppercase tracking-widest">
-            AI-Powered Digital Library
+      <section className="mb-12 bg-gradient-to-br from-indigo-900 via-indigo-800 to-indigo-900 rounded-[2.5rem] p-8 md:p-20 text-white shadow-2xl relative overflow-hidden flex flex-col items-center text-center">
+        <div className="relative z-10 max-w-4xl">
+          <div className="inline-block bg-white/10 backdrop-blur-md px-6 py-2 rounded-full text-sm font-bold mb-8 border border-white/20 uppercase tracking-widest animate-pulse">
+            🌟 استكشف مستقبل القراءة الرقمية
           </div>
-          <h1 className="text-4xl md:text-6xl font-black mb-6 leading-[1.2]">
-            تصفح وحمّل آلاف <br/> الكتب المجانية بذكاء
+          <h1 className="text-4xl md:text-7xl font-black mb-8 leading-tight">
+            حمّل كُتبك المفضلة <br/><span className="text-indigo-400">بلمحة بصر</span>
           </h1>
-          <p className="text-lg md:text-xl opacity-80 mb-10 font-medium max-w-xl mx-auto">
-            نستخدم الذكاء الاصطناعي لنقدم لك أفضل التلخيصات والتوصيات لكتابك القادم مع تحسينات سيو فائقة.
+          <p className="text-lg md:text-2xl opacity-90 mb-12 font-medium max-w-2xl mx-auto leading-relaxed">
+            مكتبة ذكية مدعومة بالذكاء الاصطناعي لاقتراح الكتب، مع روابط تحميل مباشرة وسريعة جداً.
           </p>
-          <div className="flex flex-col sm:flex-row justify-center gap-4">
+          <div className="flex flex-col sm:flex-row justify-center gap-6">
             <button 
-              onClick={() => scrollToSection('trending')}
-              className="bg-white text-indigo-900 px-10 py-4 rounded-2xl font-bold hover:bg-gray-100 transition-all shadow-xl text-lg active:scale-95"
+              onClick={() => scrollToSection('trending-section')}
+              className="bg-white text-indigo-900 px-12 py-5 rounded-2xl font-black hover:bg-indigo-50 transition-all shadow-[0_20px_40px_rgba(0,0,0,0.3)] text-xl active:scale-95"
             >
-              استكشف الترند
+              اكتشف الترند 🔥
             </button>
             <button 
-              onClick={() => scrollToSection('latest')}
-              className="bg-indigo-700/50 backdrop-blur-sm text-white border border-indigo-500/50 px-10 py-4 rounded-2xl font-bold hover:bg-indigo-700 transition-all text-lg active:scale-95"
+              onClick={() => scrollToSection('latest-section')}
+              className="bg-indigo-700/40 backdrop-blur-md text-white border-2 border-white/20 px-12 py-5 rounded-2xl font-black hover:bg-white/10 transition-all text-xl active:scale-95"
             >
-              أحدث الإضافات
+              أحدث الإضافات ✨
             </button>
           </div>
         </div>
         
-        {/* Decorative elements */}
-        <div className="absolute top-0 right-0 w-64 h-64 bg-purple-500 blur-[120px] opacity-20"></div>
-        <div className="absolute bottom-0 left-0 w-64 h-64 bg-blue-500 blur-[120px] opacity-20"></div>
+        {/* Decorative Light Orbs */}
+        <div className="absolute top-[-10%] right-[-10%] w-96 h-96 bg-indigo-500 blur-[150px] opacity-30 rounded-full"></div>
+        <div className="absolute bottom-[-10%] left-[-10%] w-96 h-96 bg-purple-500 blur-[150px] opacity-30 rounded-full"></div>
       </section>
 
       <AdSection slot="top-banner" />
 
-      {/* Main Grid Section */}
-      <section id="trending" className="mb-16 scroll-mt-24">
-        <div className="flex flex-col md:flex-row md:items-end justify-between mb-10 gap-4">
+      {/* Trending Section */}
+      <section id="trending-section" className="mb-20">
+        <div className="flex flex-col md:flex-row md:items-center justify-between mb-12 gap-4 border-r-8 border-orange-500 pr-6">
           <div>
-            <h2 className="text-3xl font-black text-gray-900 mb-2 flex items-center">
-              🔥 كتب رائجة عالمياً
-              <span className="mr-3 text-sm bg-orange-100 text-orange-600 px-3 py-1 rounded-lg">بحث مكثف</span>
-            </h2>
-            <p className="text-gray-500 font-medium italic">أكثر الكتب طلباً في الوطن العربي حسب مؤشرات جوجل لهذا الأسبوع</p>
+            <h2 className="text-4xl font-black text-gray-900 mb-2">🔥 كتب تتصدر الترند</h2>
+            <p className="text-gray-500 text-lg">الكتب الأكثر تحميلاً وبحثاً في الوطن العربي حالياً</p>
           </div>
-          <div className="flex gap-2">
-            <button 
-              onClick={() => window.location.reload()}
-              className="px-4 py-2 bg-white border border-gray-200 rounded-xl font-bold text-gray-700 hover:bg-gray-50 transition-colors"
-            >
-              تحديث
-            </button>
-          </div>
+          <button 
+            onClick={() => window.location.reload()}
+            className="px-6 py-3 bg-white border-2 border-gray-100 rounded-2xl font-bold text-gray-600 hover:border-indigo-600 hover:text-indigo-600 transition-all shadow-sm"
+          >
+            تحديث القائمة
+          </button>
         </div>
 
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6">
-          {/* عرض أول 5 كتب ترند */}
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-8">
           {allBooks.filter(b => b.trending).slice(0, 5).map(book => (
-            <BookCard key={book.id} book={book} />
-          ))}
-          
-          {/* قسم أحدث الإضافات في المنتصف */}
-          <div id="latest" className="col-span-full py-4 scroll-mt-24">
-             <AdSection slot="in-grid-banner" />
-             <div className="mt-8 mb-6">
-               <h2 className="text-3xl font-black text-gray-900">📚 أحدث الكتب المضافة</h2>
-               <p className="text-gray-500 font-medium italic">اكتشف آخر الكنوز التي أضيفت للمكتبة حديثاً</p>
-             </div>
-          </div>
-
-          {/* عرض باقي الكتب */}
-          {allBooks.filter(b => !b.trending || allBooks.indexOf(b) >= 5).map(book => (
             <BookCard key={book.id} book={book} />
           ))}
         </div>
       </section>
 
-      {/* Categories Fast Links */}
-      <section className="bg-gray-100/50 rounded-3xl p-10 border border-gray-200/50 mb-16">
-        <h3 className="text-xl font-bold mb-8 text-center text-gray-800">تصفح حسب التصنيفات الأكثر طلباً</h3>
+      {/* Ad Break */}
+      <div className="my-16">
+        <AdSection slot="mid-home" />
+      </div>
+
+      {/* Latest Additions Section */}
+      <section id="latest-section" className="mb-20">
+        <div className="flex flex-col md:flex-row md:items-center justify-between mb-12 gap-4 border-r-8 border-indigo-600 pr-6">
+          <div>
+            <h2 className="text-4xl font-black text-gray-900 mb-2">📚 أحدث ما تم رفعه</h2>
+            <p className="text-gray-500 text-lg">كن أول من يقرأ الإصدارات الجديدة والكنوز المضافة حديثاً</p>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-8">
+          {/* عرض الكتب التي لم تظهر في الترند أو عرض الكل مرتباً من الأحدث */}
+          {allBooks.slice(0, 10).map(book => (
+            <BookCard key={book.id} book={book} />
+          ))}
+        </div>
+      </section>
+
+      {/* Professional Categories Section */}
+      <section className="bg-white rounded-[3rem] p-12 shadow-sm border border-gray-100 mb-16 text-center">
+        <h3 className="text-2xl font-black mb-10 text-gray-800">تصفح المكتبة حسب التصنيفات الرائجة</h3>
         <div className="flex flex-wrap justify-center gap-4">
           {CATEGORIES.map(cat => (
             <button 
               key={cat} 
               onClick={() => handleCategoryClick(cat)}
-              className="bg-white border border-gray-200 px-8 py-3 rounded-2xl font-bold text-gray-600 hover:border-indigo-600 hover:text-indigo-600 hover:shadow-md transition-all active:scale-95"
+              className="bg-gray-50 border-2 border-transparent px-10 py-4 rounded-2xl font-bold text-gray-700 hover:border-indigo-600 hover:text-indigo-600 hover:bg-white hover:shadow-xl transition-all active:scale-95"
             >
               {cat}
             </button>

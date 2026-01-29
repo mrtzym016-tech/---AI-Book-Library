@@ -8,26 +8,45 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
-      html {
-        scroll-behavior: smooth;
+      html { scroll-behavior: smooth; }
+      body { font-family: 'Cairo', sans-serif; background-color: #f8fafc; margin: 0; }
+      #root:empty {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 100vh;
+        flex-direction: column;
+        gap: 20px;
       }
-      body {
-        font-family: 'Cairo', sans-serif;
+      #root:empty::after {
+        content: "جاري تشغيل المكتبة الذكية...";
+        color: #4f46e5;
+        font-weight: bold;
+        animation: pulse 1.5s infinite;
       }
+      @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
     </style>
+    <script>
+      // تعريف بيئة التشغيل الأساسية وتجاوز أخطاء Node.js
+      window.process = { env: { API_KEY: "" } };
+    </script>
   <script type="importmap">
 {
   "imports": {
-    "react-dom/": "https://esm.sh/react-dom@^19.2.4/",
     "react": "https://esm.sh/react@^19.2.4",
     "react/": "https://esm.sh/react@^19.2.4/",
-    "@google/genai": "https://esm.sh/@google/genai@^1.38.0",
-    "react-router-dom": "https://esm.sh/react-router-dom@^7.13.0"
+    "react-dom/": "https://esm.sh/react-dom@^19.2.4/",
+    "react-router-dom": "https://esm.sh/react-router-dom@^7.13.0",
+    "@google/genai": "https://esm.sh/@google/genai@^1.38.0"
   }
 }
 </script>
 </head>
-  <body class="bg-gray-50 text-gray-900">
+  <body>
     <div id="root"></div>
+    
+    <!-- هذا السكريبت هو المحرك. سيقوم تلقائياً بالبحث عن index.tsx وتشغيله -->
+    <!-- تم إزالة الـ importmap لضمان عدم التعارض مع المحرك -->
+    <script type="module" src="https://esm.sh/run"></script>
   </body>
 </html>

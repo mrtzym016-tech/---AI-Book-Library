@@ -1,14 +1,14 @@
 
 import React from 'react';
 import { HashRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-import Header from './components/Header';
-import Footer from './components/Footer';
-import Home from './pages/Home';
-import BookDetail from './pages/BookDetail';
-import Admin from './pages/Admin';
-import Search from './pages/Search';
-import Login from './pages/Login';
-import Download from './pages/Download';
+import Header from './components/Header.tsx';
+import Home from './pages/Home.tsx';
+import BookDetail from './pages/BookDetail.tsx';
+import Admin from './pages/Admin.tsx';
+import Search from './pages/Search.tsx';
+import Login from './pages/Login.tsx';
+import Download from './pages/Download.tsx';
+import FooterComponent from './components/Footer.tsx';
 
 interface AdminRouteProps {
   children: React.ReactNode;
@@ -42,7 +42,7 @@ const App: React.FC = () => {
             <Route path="*" element={<Navigate to="/" />} />
           </Routes>
         </main>
-        <Footer />
+        <FooterComponent />
       </div>
     </Router>
   );
